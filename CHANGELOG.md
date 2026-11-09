@@ -1,10 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 (2026-11-09)
 
-Planned as 0.1.0: the first release for apps acting in the Anikeen Console for their users (first
-user: Gleem). Needs `anikeen/id` 3.6 and a Console release with app tokens, `GET v1/app-team` and
-app webhooks (on staging first).
+The first release, for apps acting in the Anikeen Console for their users. Needs `anikeen/id` 3.6
+and a Console with app tokens, `GET v1/app-team` and app webhooks.
 
 ### Added
 
@@ -16,7 +15,8 @@ app webhooks (on staging first).
 - `AnikeenConsole::forUser($user)`: requests with the user's stored Anikeen ID token, refreshed
   through `anikeen/id` when it expires or the Console answers `401` (the new pair is saved, the
   request sent once more; locked per user). `withToken($token)` for a fixed token.
-- Production and staging base URLs (`services.anikeen_console.mode` / `base_url`).
+- Production and staging base URLs (`https://console.anikeen.com/api/v1`,
+  `https://staging.console.anikeen.com/api/v1`; `services.anikeen_console.mode` / `base_url`).
 - `appTeam()` (`GET v1/app-team`) and `catalog($team)` with helpers per family.
 - `orders($team)->create($items, ['return_url' => …])`: send the user back to your app after the
   checkout (app tokens only); the Console appends `console_order` and `status`.
