@@ -8,6 +8,7 @@ app webhooks (on staging first).
 
 ### Added
 
+- Works with Guzzle 7.8+ and 8 (`guzzlehttp/guzzle: ^7.8|^8.0`), so it installs in a new Laravel 13 app.
 - `AnikeenConsole::forUser($user)`: requests with the user's stored Anikeen ID token, refreshed
   through `anikeen/id` when it expires or the Console answers `401` (the new pair is saved, the
   request sent once more; locked per user). `withToken($token)` for a fixed token.
