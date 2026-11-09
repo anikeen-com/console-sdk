@@ -7,7 +7,8 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    # private repo: our own runners (no GitHub-hosted minutes)
+    runs-on: ${{ vars.RUNNER || 'anikeen-ci' }}
     strategy:
       fail-fast: false
       matrix:
