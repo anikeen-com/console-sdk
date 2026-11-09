@@ -124,6 +124,14 @@ $catalog = $console->catalog($team);
 $plans = $catalog->products('container');
 $locations = $catalog->options('container')->locations;
 
+// only GPU plans, NVIDIA, at most 150 € net per month, cheapest first
+$gpuPlans = $console->catalog($team, [
+    'gpu' => true,
+    'gpu_vendor' => 'nvidia',     // nvidia | amd | intel
+    'max_price' => 150,           // on monthly_price: net, the team's price, hourly plans at their monthly cap
+    'sort' => 'price',            // price | -price
+])->products('container');
+
 $order = $console->orders($team)->create([
     ['family' => 'container', 'product_id' => $planId, 'attributes' => [
         'location_id' => 'bon1',
@@ -136,6 +144,13 @@ $order = $console->orders($team)->create([
 
 return redirect($order->checkout_url);      // the user confirms (and pays) on Anikeen ID
 ```
+
+Catalog filters (all optional, applied by the Console; families left without products are left
+out): `family` (alias or list), `gpu` (`true`/`false`), `gpu_vendor`, `gpu_model` (substring),
+`gpu_mode` (`shared`/`exclusive`), `gpu_min_vram_gb`, `gpu_min_count`, `min_vcores`,
+`min_memory_mb`, `min_disk_gb`, `min_price` / `max_price` (each product's `monthly_price`: what a
+month costs at most, net, at the team's price) and `sort` (`price`/`-price`). A bad value throws
+`ValidationFailedException`.
 
 ### Tokens
 

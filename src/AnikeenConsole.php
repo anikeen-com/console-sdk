@@ -6,6 +6,7 @@ use Anikeen\Console\Endpoints\Containers;
 use Anikeen\Console\Endpoints\Orders;
 use Anikeen\Console\Exceptions\ApiException;
 use Anikeen\Console\Exceptions\AuthenticationException;
+use Anikeen\Console\Exceptions\ValidationFailedException;
 use Anikeen\Console\Resources\Catalog;
 use Anikeen\Console\Resources\Team;
 use Anikeen\Console\Testing\WebhookRequest;
@@ -126,13 +127,34 @@ class AnikeenConsole
      * The orderable products per family (`GET v1/catalog`), filtered to the token's scopes. With a
      * team: its prices, VAT rate and the `options` for the order attributes (locations, templates, …).
      *
+     * $filters narrow the products server-side (families left without products are left out):
+     * `['gpu' => true, 'gpu_vendor' => 'nvidia', 'max_price' => 150, 'sort' => 'price']`.
+     * Booleans are sent as `true`/`false`, a list (`'family' => ['container', 'server']`) comma
+     * separated, null values are left out. Prices compare `monthly_price` (net, the team's price).
+     *
+     * @param  array{family?: string|list<string>, gpu?: bool, gpu_vendor?: 'nvidia'|'amd'|'intel', gpu_model?: string, gpu_mode?: 'shared'|'exclusive', gpu_min_vram_gb?: int, gpu_min_count?: int, min_vcores?: int, min_memory_mb?: int, min_disk_gb?: int, min_price?: float|int, max_price?: float|int, sort?: 'price'|'-price'}  $filters
+     *
      * @throws ApiException
+     * @throws ValidationFailedException a filter with a bad value (422)
      */
-    public function catalog(Team|string|null $team = null): Catalog
+    public function catalog(Team|string|null $team = null, array $filters = []): Catalog
     {
         $team = $team instanceof Team ? $team->id : $team;
+        $query = array_filter(['team' => $team]);
 
-        return Catalog::fromResult($this->call('GET', 'catalog', query: array_filter(['team' => $team])), $this);
+        foreach ($filters as $key => $value) {
+            if ($value === null || $key === 'team') {
+                continue;
+            }
+
+            $query[$key] = match (true) {
+                is_bool($value) => $value ? 'true' : 'false',
+                is_array($value) => implode(',', $value),
+                default => (string) $value,
+            };
+        }
+
+        return Catalog::fromResult($this->call('GET', 'catalog', query: $query), $this);
     }
 
     /**

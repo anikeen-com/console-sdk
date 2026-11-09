@@ -45,4 +45,38 @@ class CatalogTest extends TestCase
         $this->assertRequest(0, 'GET', 'catalog');
         $this->assertSame([], $catalog->families());
     }
+
+    public function test_the_catalog_with_filters(): void
+    {
+        $this->respond(200, ['data' => [], 'team' => null, 'vat_rate' => 19.0]);
+
+        $this->console()->catalog('team_1', [
+            'gpu' => true,
+            'gpu_vendor' => 'nvidia',
+            'family' => ['container', 'server'],
+            'gpu_min_vram_gb' => 24,
+            'max_price' => 150.5,
+            'min_price' => null,
+            'sort' => 'price',
+        ]);
+
+        $this->assertRequest(0, 'GET', 'catalog', query: [
+            'team' => 'team_1',
+            'gpu' => 'true',
+            'gpu_vendor' => 'nvidia',
+            'family' => 'container,server',
+            'gpu_min_vram_gb' => '24',
+            'max_price' => '150.5',
+            'sort' => 'price',
+        ]);
+    }
+
+    public function test_filters_without_team_and_false(): void
+    {
+        $this->respond(200, ['data' => [], 'team' => null, 'vat_rate' => 19.0]);
+
+        $this->console()->catalog(filters: ['gpu' => false]);
+
+        $this->assertRequest(0, 'GET', 'catalog', query: ['gpu' => 'false']);
+    }
 }
