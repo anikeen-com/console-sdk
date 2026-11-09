@@ -17,9 +17,35 @@ use stdClass;
  * @property stdClass|null $location {id, name}
  * @property stdClass|null $template {id, name}
  * @property stdClass|null $gpu {vendor, model, vram_gb, mode, count}
+ * @property stdClass|null $options {features: list<string>, devices: list<string>}, the LXC options of the order
  */
 class Container extends Product
 {
+    /** LXC options of an order (`attributes.options`): FUSE file systems, e.g. gocryptfs */
+    public const FEATURE_FUSE = 'fuse';
+
+    /** kernel keyrings, needed by rootless Podman and Docker */
+    public const FEATURE_KEYCTL = 'keyctl';
+
+    /** /dev/net/tun: rootless container networking (pasta, slirp4netns), VPNs */
+    public const DEVICE_TUN = 'tun';
+
+    /**
+     * Whether the container was ordered with the LXC feature (fuse, keyctl).
+     */
+    public function hasFeature(string $feature): bool
+    {
+        return in_array($feature, (array) ($this->options->features ?? []), true);
+    }
+
+    /**
+     * Whether the container has the device of the options (tun).
+     */
+    public function hasDevice(string $device): bool
+    {
+        return in_array($device, (array) ($this->options->devices ?? []), true);
+    }
+
     /**
      * Rename the container (the hostname inside changes with the next restart).
      *
@@ -53,11 +79,13 @@ class Container extends Product
     }
 
     /**
+     * @param  array{features?: list<string>, devices?: list<string>}|null  $options  new LXC options; null keeps them
+     *
      * @throws ApiException
      */
-    public function reinstall(string $templateId, ?string $sshKey = null): Accepted
+    public function reinstall(string $templateId, ?string $sshKey = null, ?array $options = null): Accepted
     {
-        return $this->client()->containers()->reinstall($this->id, $templateId, $sshKey);
+        return $this->client()->containers()->reinstall($this->id, $templateId, $sshKey, $options);
     }
 
     public function backups(): ContainerBackups

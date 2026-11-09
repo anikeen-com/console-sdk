@@ -145,6 +145,33 @@ $order = $console->orders($team)->create([
 return redirect($order->checkout_url);      // the user confirms (and pays) on Anikeen ID
 ```
 
+Containers that run their own containers inside (e.g. rootless Podman) need LXC options. They are
+allow-listed: `features` `fuse` (FUSE file systems such as gocryptfs) and `keyctl` (kernel keyrings),
+`devices` `tun` (`/dev/net/tun`); nesting is always on, anything else answers `422`. Gleem, for
+example, orders a GPU plan with all three:
+
+```php
+use Anikeen\Console\Resources\Container;
+
+$console->orders($team)->create([
+    ['family' => 'container', 'product_id' => $gpuPlanId, 'attributes' => [
+        'location_id' => 'bon1',
+        'container_template_id' => $templateId,
+        'vlan_id' => $vlanId,
+        'options' => [
+            'features' => [Container::FEATURE_FUSE, Container::FEATURE_KEYCTL],
+            'devices' => [Container::DEVICE_TUN],
+        ],
+    ]],
+], ['tos_accepted' => true]);
+
+$container->options;                         // {features: ["fuse", "keyctl"], devices: ["tun"]}
+$container->hasDevice(Container::DEVICE_TUN); // true
+$container->reinstall($templateId);           // keeps the options; pass new ones as third argument
+```
+
+The catalog lists the allowed values in `$catalog->options('container')->options`.
+
 Send the user back to your app after the checkout with `return_url` (app tokens only; https, plain
 http only for localhost). The Console redirects there with the order id and its status appended:
 

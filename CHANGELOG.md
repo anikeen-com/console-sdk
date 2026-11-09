@@ -8,6 +8,10 @@ app webhooks (on staging first).
 
 ### Added
 
+- Container LXC options: the order attribute `options` (`{features: [fuse, keyctl], devices: [tun]}`,
+  e.g. for rootless Podman inside the container), documented in `Orders::create()` and the README;
+  `Container::$options`, `hasFeature()`, `hasDevice()` and the constants `FEATURE_FUSE`,
+  `FEATURE_KEYCTL`, `DEVICE_TUN`; `reinstall()` takes new options (null keeps them).
 - Works with Guzzle 7.8+ and 8 (`guzzlehttp/guzzle: ^7.8|^8.0`), so it installs in a new Laravel 13 app.
 - `AnikeenConsole::forUser($user)`: requests with the user's stored Anikeen ID token, refreshed
   through `anikeen/id` when it expires or the Console answers `401` (the new pair is saved, the

@@ -82,15 +82,21 @@ class Containers
      * Reinstall with a template of the container's node. All data and snapshots are lost.
      *
      * @param  string|null  $sshKey  an SSH key of the team
+     * @param  array{features?: list<'fuse'|'keyctl'>, devices?: list<'tun'>}|null  $options  new LXC
+     *     options as in the order; null keeps the container's
      *
      * @throws ApiException
      */
-    public function reinstall(string $id, string $templateId, ?string $sshKey = null): Accepted
+    public function reinstall(string $id, string $templateId, ?string $sshKey = null, ?array $options = null): Accepted
     {
         $payload = ['template_id' => $templateId];
 
         if ($sshKey !== null) {
             $payload['ssh_key'] = $sshKey;
+        }
+
+        if ($options !== null) {
+            $payload['options'] = $options;
         }
 
         return Accepted::fromResult($this->console->call('POST', $this->path($id) . '/reinstall', $payload), $this->console);

@@ -3,6 +3,7 @@
 namespace Anikeen\Console\Tests;
 
 use Anikeen\Console\Facades\AnikeenConsole;
+use Anikeen\Console\Resources\Container;
 use Anikeen\Console\Resources\Order;
 use Anikeen\Console\Resources\Team;
 use GuzzleHttp\Psr7\Response;
@@ -48,6 +49,20 @@ class OrdersTest extends TestCase
         $this->console()->orders('team_1')->create($this->items, ['tos_accepted' => true, 'return_url' => 'https://gleem.example/ordered']);
 
         $this->assertRequest(0, 'POST', 'teams/team_1/orders', ['items' => $this->items, 'tos_accepted' => true, 'return_url' => 'https://gleem.example/ordered']);
+    }
+
+    public function test_a_container_is_ordered_with_lxc_options(): void
+    {
+        $this->respond(201, $this->order());
+        $items = $this->items;
+        $items[0]['attributes']['options'] = ['features' => [Container::FEATURE_FUSE, Container::FEATURE_KEYCTL], 'devices' => [Container::DEVICE_TUN]];
+
+        $this->console()->orders('team_1')->create($items, ['tos_accepted' => true]);
+
+        $this->assertRequest(0, 'POST', 'teams/team_1/orders', ['items' => [['family' => 'container', 'product_id' => '01JPLN', 'attributes' => [
+            'location_id' => 'bon1', 'container_template_id' => '01JTPL', 'vlan_id' => '01JVLN',
+            'options' => ['features' => ['fuse', 'keyctl'], 'devices' => ['tun']],
+        ]]], 'tos_accepted' => true]);
     }
 
     public function test_every_order_gets_a_new_key(): void

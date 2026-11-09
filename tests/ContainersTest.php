@@ -58,6 +58,24 @@ class ContainersTest extends TestCase
         $this->assertRequest(2, 'POST', 'containers/01JCT/reinstall', ['template_id' => '01JTPL2', 'ssh_key' => 'key-1']);
     }
 
+    public function test_the_lxc_options_are_read_and_sent_with_a_reinstall(): void
+    {
+        $this->respond(200, $this->container(['options' => ['features' => ['fuse', 'keyctl'], 'devices' => ['tun']]]));
+        $this->respond(202, ['message' => 'Reinstalling.']);
+
+        $container = $this->console()->containers()->find('01JCT');
+
+        $this->assertSame(['fuse', 'keyctl'], $container->options->features);
+        $this->assertTrue($container->hasFeature(Container::FEATURE_FUSE));
+        $this->assertTrue($container->hasFeature(Container::FEATURE_KEYCTL));
+        $this->assertTrue($container->hasDevice(Container::DEVICE_TUN));
+        $this->assertFalse(Container::make($this->container())->hasDevice(Container::DEVICE_TUN));
+
+        $container->reinstall('01JTPL', null, ['features' => ['fuse'], 'devices' => []]);
+
+        $this->assertRequest(1, 'POST', 'containers/01JCT/reinstall', ['template_id' => '01JTPL', 'options' => ['features' => ['fuse'], 'devices' => []]]);
+    }
+
     public function test_a_reinstall_without_ssh_key(): void
     {
         $this->respond(202, ['message' => 'Reinstalling.']);
