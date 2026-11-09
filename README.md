@@ -250,11 +250,11 @@ events it has already handled (by event id, remembered 3 days in the cache) and 
 | Type (`Webhooks\EventType`) | Event | `$event->object` |
 |------|-------|----------|
 | `order.completed` | `OrderCompleted` | `Order`: checkout confirmed, provisioning started |
-| `order.failed` | `OrderFailed` | `Order`: cancelled, expired or refused |
-| `product.ready` | `ProductReady` | `Container` (or `Product`): built, running, addresses known |
-| `product.failed` | `ProductFailed` | `Product`: building failed (refunded) |
-| `product.updated` | `ProductUpdated` | `Product`: suspended / resumed, rescaled, reinstalled |
-| `product.deleted` | `ProductDeleted` | `Product`: deleted |
+| `order.failed` | `OrderFailed` | `Order`: checkout cancelled, expired or could not be opened |
+| `product.ready` | `ProductReady` | `Container` (or `Product`): built; `status` is the live status (container: `running`) when the Console could read it, else `active` |
+| `product.failed` | `ProductFailed` | `Product`: building one order item failed (refunded); `id` is `null`, with `order_id`, `order_item_id`, `product_id`, `error` |
+| `product.updated` | `ProductUpdated` | `Product`: `data.reason` is `billing_suspended`, `billing_resumed`, `rescaled` or `reinstalled` |
+| `product.deleted` | `ProductDeleted` | `Product`: deleted; `data.reason` `contract_ended` when the contract ended in Anikeen ID |
 | `team.released` | `TeamReleased` | `Team`: the user removed your app in Anikeen ID; the last event for that team |
 | `webhook.test` | `WebhookTest` | `null` (see `$event->data`) |
 
