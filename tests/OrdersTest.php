@@ -41,6 +41,15 @@ class OrdersTest extends TestCase
         $this->assertSame('container', $order->items[0]->family);
     }
 
+    public function test_an_order_with_a_return_url(): void
+    {
+        $this->respond(201, $this->order());
+
+        $this->console()->orders('team_1')->create($this->items, ['tos_accepted' => true, 'return_url' => 'https://gleem.example/ordered']);
+
+        $this->assertRequest(0, 'POST', 'teams/team_1/orders', ['items' => $this->items, 'tos_accepted' => true, 'return_url' => 'https://gleem.example/ordered']);
+    }
+
     public function test_every_order_gets_a_new_key(): void
     {
         $this->respond(201, $this->order());

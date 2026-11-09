@@ -145,6 +145,24 @@ $order = $console->orders($team)->create([
 return redirect($order->checkout_url);      // the user confirms (and pays) on Anikeen ID
 ```
 
+Send the user back to your app after the checkout with `return_url` (app tokens only; https, plain
+http only for localhost). The Console redirects there with the order id and its status appended:
+
+```php
+$order = $console->orders($team)->create($items, [
+    'tos_accepted' => true,
+    'return_url' => route('ordered'),       // → https://your.app/ordered?console_order=01JE…&status=completed
+]);
+
+// routes/web.php
+Route::get('/ordered', function (Request $request) use ($console, $team) {
+    // never trust the query: read the order (completed once Anikeen ID confirmed it)
+    $order = $console->orders($team)->find($request->query('console_order'));
+
+    return view('ordered', ['order' => $order]);
+})->name('ordered');
+```
+
 Catalog filters (all optional, applied by the Console; families left without products are left
 out): `family` (alias or list), `gpu` (`true`/`false`), `gpu_vendor`, `gpu_model` (substring),
 `gpu_mode` (`shared`/`exclusive`), `gpu_min_vram_gb`, `gpu_min_count`, `min_vcores`,

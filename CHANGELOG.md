@@ -13,6 +13,8 @@ app webhooks (on staging first).
   request sent once more; locked per user). `withToken($token)` for a fixed token.
 - Production and staging base URLs (`services.anikeen_console.mode` / `base_url`).
 - `appTeam()` (`GET v1/app-team`) and `catalog($team)` with helpers per family.
+- `orders($team)->create($items, ['return_url' => …])`: send the user back to your app after the
+  checkout (app tokens only); the Console appends `console_order` and `status`.
 - `catalog($team, $filters)`: server-side filters (`gpu`, `gpu_vendor`, `gpu_model`, `gpu_mode`,
   `gpu_min_vram_gb`, `gpu_min_count`, `min_vcores`, `min_memory_mb`, `min_disk_gb`, `min_price`,
   `max_price` on `monthly_price`, `family`, `sort`); booleans sent as `true`/`false`, lists comma

@@ -43,9 +43,11 @@ class Orders
      * @param  list<array{family: string, product_id: string, attributes?: array<string, mixed>}>  $items
      *     1–10 items: `family` and `product_id` from the catalog, `attributes` per family
      *     (container: location_id, container_template_id, vlan_id, ssh_key?, name?)
-     * @param  array{tos_accepted?: bool, withdrawal_waiver?: bool, coupon_code?: string}  $options
+     * @param  array{tos_accepted?: bool, withdrawal_waiver?: bool, coupon_code?: string, return_url?: string}  $options
      *     `tos_accepted` is required by the Console and must be true: only send it once the user
-     *     accepted the terms of service
+     *     accepted the terms of service. `return_url` (app tokens only): where the user lands after
+     *     the checkout on Anikeen ID, with `console_order=<order id>&status=<status>` appended
+     *     (https; plain http only for localhost). Read the order before trusting it.
      *
      * @throws ApiException 422 ValidationFailedException, 429 RateLimitException, 403 MissingScopeException, …
      */
