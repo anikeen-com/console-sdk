@@ -74,7 +74,7 @@ Add to `config/services.php` (so it still works with `php artisan config:cache`)
 
 | Mode | Base URL |
 |------|----------|
-| `production` (default) | `https://api.console.anikeen.com/v1` |
+| `production` (default) | `https://console.anikeen.com/api/v1` |
 | `staging` | `https://staging.console.anikeen.com/api/v1` |
 
 Use `ANIKEEN_ID_MODE=staging` together with `ANIKEEN_CONSOLE_MODE=staging`: the staging Console

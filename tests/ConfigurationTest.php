@@ -10,7 +10,7 @@ class ConfigurationTest extends TestCase
     {
         config(['services.anikeen_console' => []]);
 
-        $this->assertSame('https://api.console.anikeen.com/v1', (new AnikeenConsole())->getBaseUrl());
+        $this->assertSame('https://console.anikeen.com/api/v1', (new AnikeenConsole())->getBaseUrl());
     }
 
     public function test_staging_mode_uses_the_staging_api(): void

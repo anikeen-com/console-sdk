@@ -33,7 +33,7 @@ class AnikeenConsole
      */
     public const EXPIRY_LEEWAY = 60;
 
-    protected string $baseUrl = 'https://api.console.anikeen.com/v1';
+    protected string $baseUrl = 'https://console.anikeen.com/api/v1';
 
     protected string $stagingBaseUrl = 'https://staging.console.anikeen.com/api/v1';
 
