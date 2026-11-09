@@ -168,6 +168,10 @@ class WebhookTest extends TestCase
         $this->assertSame(['POST'], $route->methods());
         $this->assertSame('webhooks/anikeen-console', $route->uri());
         $this->assertContains(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class, $route->excludedMiddleware());
+        // Laravel 13's web group checks with PreventRequestForgery (tests skip CSRF checks, so only this proves it)
+        if (class_exists(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class)) {
+            $this->assertContains(\Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class, $route->excludedMiddleware());
+        }
         $this->assertSame('/webhooks/anikeen-console', \Anikeen\Console\AnikeenConsole::webhookUri());
     }
 
