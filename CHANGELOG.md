@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (2026-11-09)
+## 1.0.0 (2026-11-10)
 
 The first release, for apps acting in the Anikeen Console for their users. Needs `anikeen/id` 3.6
 and a Console with app tokens, `GET v1/app-team` and app webhooks.

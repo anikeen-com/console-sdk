@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class AnikeenConsole
 {
-    public const VERSION = '0.1.0';
+    public const VERSION = '1.0.0';
 
     /**
      * Seconds before `exp` at which a stored token counts as expired and is refreshed first.
