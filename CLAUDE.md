@@ -8,7 +8,7 @@ Guidance for Claude Code (and other contributors) working in this repository.
 (Laravel 12–13, PHP 8.2+). Apps (first: Gleem) act in the Console for their users with the user's
 own Anikeen ID token: app team, catalog, orders, containers, webhooks. It depends on `anikeen/id`
 for the tokens (fields, refresh), the webhook signature (`Webhook::constructEvent()`) and the
-base exception. The repo is private for now, but write it as if public: never commit secrets,
+base exception. The repo is public (on Packagist): never commit secrets,
 internal hostnames or customer data.
 
 **A change to the Console API that apps use (new endpoint, field, error code or event) must be

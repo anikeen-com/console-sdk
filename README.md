@@ -38,15 +38,6 @@ your user ── confirms on Anikeen ID ──▶ webhook order.completed, later
 
 ## Installation
 
-The repository is private for now; add it as a Composer VCS repository (with a GitHub token or
-deploy key in `auth.json`):
-
-```json
-"repositories": [
-    {"type": "vcs", "url": "https://github.com/anikeen-com/console-sdk"}
-]
-```
-
 ```
 composer require anikeen/console
 ```
